@@ -1,0 +1,4 @@
+"0","##ACtual vs predicted"
+"0",""
+"0","df1 <- data.frame(""Actual"" = test_set$Scores, ""Predicted"" = pred)"
+"0","df1"

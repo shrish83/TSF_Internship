@@ -1,0 +1,103 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+# Loading Required Packages
+```{r warning=FALSE}
+rm(list=ls())
+library(ggplot2)
+library(caTools)
+library(MLmetrics)
+```
+
+
+
+
+# Reading data 
+```{r}
+df <- read.csv("C:/Users/Swapnil Kumar Vaish/Documents/R/TheSparksFoundation_Internship/Prediction Using Supervised ML/data.csv")
+
+head(df,10)
+```
+
+#Let's check how correlated our features are:
+```{r}
+ggplot(data = df, aes(x=Hours, y = Scores)) + geom_point(colour = "red") +  ggtitle(" Hours vs  Score ") + xlab("Hours of study") + ylab("Scores")
+```
+
+And, hence, we see a positive correlation i.e linear relation betweent the hours and scores.
+
+
+# Data Preparation 
+
+Splitting data into train and test
+```{r}
+set.seed(1011)
+split <- sample.split(df$Scores, SplitRatio = 0.66)
+training_set = subset(df, split == T)
+test_set = subset(df,split == F) 
+```
+
+
+# Training Algorithm
+
+Applying model/algorithm on training data 
+```{r}
+model_lm <- lm(Scores ~ Hours, data = training_set)
+```
+
+
+```{r}
+#plotting the regression line
+
+summary(model_lm)
+
+plot(model_lm)
+```
+
+
+## Test data
+
+```{r}
+## Plotting for the test data
+
+scatter.smooth(test_set$Hours,test_set$Scores, lpars = list(col="Red"))
+```
+
+
+# Predictions
+
+```{r}
+pred <- predict(model_lm, newdata =  test_set)
+
+pred
+
+```
+
+```{r}
+##ACtual vs predicted
+
+df1 <- data.frame("Actual" = test_set$Scores, "Predicted" = pred)
+df1
+```
+
+
+## Testing your own data
+```{r}
+#Prediction for 9.25 hours
+pred1 <- predict(model_lm, newdata =  data.frame(Hours = 9.25))
+
+paste("Score predicted is ",round(pred1)," if a student studies for 9.25 hours per day.")
+```
+
+
+# Evaluating the model
+
+```{r}
+MSE(df1$Predicted,df1$Actual)
+```
+
+
+
+

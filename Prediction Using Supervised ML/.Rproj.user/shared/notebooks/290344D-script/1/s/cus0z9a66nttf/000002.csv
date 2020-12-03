@@ -1,0 +1,8 @@
+"0","#Prediction for 9.25 hours"
+"0","pred1 <- predict(model_lm, newdata =  data.frame(Hours = 9.25))"
+"0",""
+"0","paste(""Score predicted is "",round(pred1),"" if a student studies for 9.25 hours per day."")"
+"1","[1]"
+"1"," ""Score predicted is  97  if a student studies for 9.25 hours per day."""
+"1","
+"

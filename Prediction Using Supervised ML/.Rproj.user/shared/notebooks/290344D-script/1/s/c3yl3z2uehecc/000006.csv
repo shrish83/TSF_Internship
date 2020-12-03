@@ -1,0 +1,4 @@
+"0","set.seed(1011)"
+"0","split <- sample.split(df$Scores, SplitRatio = 0.66)"
+"0","training_set = subset(df, split == T)"
+"0","test_set = subset(df,split == F) "

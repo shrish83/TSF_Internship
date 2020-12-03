@@ -1,0 +1,3 @@
+"0","## Plotting for the test data"
+"0",""
+"0","scatter.smooth(test_set$Hours,test_set$Scores, lpars = list(col=""Red""))"

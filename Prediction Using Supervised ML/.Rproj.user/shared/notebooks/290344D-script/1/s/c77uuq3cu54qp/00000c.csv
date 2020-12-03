@@ -1,0 +1,2 @@
+"0","library(ggplot2)"
+"0","ggplot(data = df, aes(x=Hours, y = Scores)) + geom_point(colour = ""red"") +  ggtitle("" Hours vs  Score "") + xlab(""Hours of study"") + ylab(""Scores"")"
