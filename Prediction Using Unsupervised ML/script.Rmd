@@ -1,0 +1,105 @@
+---
+title: "script"
+author: "Shrishti Vaish"
+date: "03/12/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Importing packages
+```{r}
+library(ggplot2)
+library(factoextra)
+library(ggpubr)
+```
+
+# Reading dataset
+```{r}
+df <- read.csv("Iris.csv")
+df$Id <- NULL
+
+head(df)
+```
+
+# K means Classification
+Checking the optimum  no. of clusters
+```{r}
+x <- scale(df[, c(1:4)])
+
+set.seed(173)
+wss <- function(k){
+  kmeans(x, k, nstart = 10)$tot.withinss
+}
+
+k.values <- 1:15
+
+library(purrr)
+wss_values <- map_dbl(k.values, wss)
+
+plot(k.values, wss_values,
+       type="b", pch = 19, frame = FALSE, 
+       xlab="Number of clusters K",
+       ylab="Total within-clusters sum of squares")
+
+```
+
+Fortunately, this process to compute the “Elbow method” has been wrapped up in a single function (fviz_nbclust):
+
+```{r}
+set.seed(173)
+
+#install.packages("factoextra")
+
+fviz_nbclust(x, kmeans, method = "wss")
+
+```
+
+The results suggest that 3 is the optimal number of clusters as it appears to be the bend in the knee (or elbow)
+
+
+# K means
+Now, applying kmeans to the dataset
+```{r}
+fitK <- kmeans(x,3)
+fitK
+```
+
+# Visualizations
+```{r}
+plot(df, col = fitK$cluster)
+```
+
+# Actual vs Predicted Classifications
+
+```{r}
+table(Predicated = fitK$cluster, Actual = df$Species)
+```
+
+
+# Clustering Visualization
+```{r}
+fviz_cluster(fitK, x, palette = c("red", "blue", "green"), geom = "point", ellipse.type = "convex", ggtheme = theme_bw()) + xlab("Sepal Length") + ylab("Sepal Width") + ggtitle("Setosa vs Virginica vs Versicolor")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
