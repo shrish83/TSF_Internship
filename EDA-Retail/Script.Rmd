@@ -1,0 +1,127 @@
+---
+title: "Analysis Script"
+author: "Shrishti Vaish"
+date: "04/12/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Loading Packages
+```{r warning=FALSE, message=FALSE, results='hide'}
+rm(list=ls())
+library(ggplot2)
+library(tidyverse)
+```
+
+
+# Reading dataset
+```{r}
+df <- read.csv("SampleSuperstore.csv")
+
+str(df)
+summary(df)
+```
+
+# Data preparation and Cleaning
+
+Checking for abnormalities:
+```{r}
+
+#any null values?
+is.null(df)
+
+#any duplicacy?
+dfnew <- df %>% distinct() ##yes, duplicates were removed
+```
+
+We see that there is an outlier in the Sales feature, an unusual hike. Let's replace it with the mean of sales.
+```{r}
+maxSales <- max(dfnew$Sales)
+dfnew$Sales <- replace(dfnew$Sales, dfnew$Sales==maxSales,mean(dfnew$Sales))
+```
+
+# Removing country and Postal Codes feature
+```{r}
+dfnew <- dfnew %>% select(-c(Country, Postal.Code))
+```
+
+
+# Visualization
+Let's analyze patterns in our cleaned data
+
+### Sales vs Quantity
+##### In the below graph, we see the following pattern that most of the sales have been triggered by the standard class of shipment mode.
+```{r}
+ggplot() + geom_point(data = dfnew, aes(x = Quantity, y = Sales, color = Ship.Mode)) 
+```
+
+### Sales vs Profit
+And hence, obviously we see more profits/loss have been availed from the standard shipment class. But, there are not higher range profits seen this feature.
+```{r}
+ggplot() + geom_point(data = dfnew, aes(x = Sales, y = Profit, color = Ship.Mode)) 
+```
+
+
+### Sales vs Discount
+Let us see how Sales are affected if discounts are offered.
+```{r}
+ggplot() + geom_point(data = dfnew, aes(x = Discount, y = Sales, color = Ship.Mode)) 
+```
+*It is evident from the above graph that lesser discounts attract more sales. But, more discounts attract the Standard Class shipment. Same day shipment mode receive the least disount offers.*
+
+
+
+### Profits vs Discount
+Let's see if profits have been triggered if discounts have been redeemed.
+```{r}
+ggplot() + geom_point(data = dfnew, aes(x = Discount, y = Profit, color = Ship.Mode)) 
+```
+
+Yes, we see clearly, the more discounts have been offered and redeemed, the lesser profits the segments have achieved. 
+Products with no discounts show high range of profits but as the discount range increases, we only see more and more loss with hardly any profit.
+
+
+**Let us see if this is the case with other segments**
+```{r}
+ggplot() + geom_point(data = dfnew, aes(x = Sub.Category, y = Profit, color = Region)) + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+```
+**We see that more losses have been incurred by the *Binders* industry mainly in the Central region and *Machines* industry.**
+
+
+### Now,
+```{r}
+ggplot() + geom_point(data = dfnew, aes(x = Category, y = Sales, color = Region)) + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+```
+**More Sales have been derived from the technology category, then office supplies and then Furniture.**
+
+
+```{r}
+ggplot() + geom_point(data = dfnew, aes(x = Category, y = Profit, color = Region)) + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+```
+
+**The office supplies category incurrs more loss in the central region, loss in the technology and Furniture category varies by region.**
+
+Since, Sales also vary from low to high in this category so is are profits.
+
+```{r}
+ggplot() + geom_point(data = dfnew, aes(x = Sales, y = Profit, color = Category)) 
+```
+
+### We have now witnessed from the above graphs that the Sales to Profit ratio is same in every category, no matter how they are clubbed.
+
+
+
+## Conclusion
+
+#### **Recommended Solutions/ Key Insights**
+
+*Same day shipment if receives more discounts can trigger sales/profits.*
+*Discounts should be based on the Sales and should not increase a particular range otherwise unnecessary disounts woth low sales can witness huge losses*
+*Binders and Machines industry should be focused upon more so as to strengthen these weakened areas.*
+*Office Supplies in the Central Region should be focused upon more to make up losses. Preferred solutions could be discounts/variety or kind of supplies being offered.*
+
+
+#                                                         THANK YOU!!
